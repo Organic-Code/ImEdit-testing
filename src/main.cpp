@@ -6,14 +6,13 @@
 #include <imgui_te_context.h>
 #include <iostream>
 
-// imgui_app (this is a helper to wrap multiple backends)
 #include "imgui_app.h"
 #include "imedit/editor.h"
 
-std::string as_string(ImEdit::editor& ed) {
-    std::string str;
-    std::copy(ed.begin(), ed.end(), std::back_inserter(str));
-    return str;
+void add_cursor_movement_tests(ImGuiTestEngine* engine);
+
+void add_tests(ImGuiTestEngine* engine) {
+    add_cursor_movement_tests(engine);
 }
 
 int main(int, char*[])
@@ -22,12 +21,6 @@ int main(int, char*[])
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
 
-    constexpr const char * editor_name = "editor";
-    constexpr const char * editor_window_name = "Editor";
-
-    ImEdit::editor editor(editor_name);
-    editor._width = editor._height = 800;
-
     ImGuiTestEngine* engine = ImGuiTestEngine_CreateContext();
     ImGuiApp* window = ImGuiApp_ImplDefault_Create();
     window->InitCreateWindow(window, "ImEdit testing", ImVec2(1440, 900));
@@ -35,15 +28,7 @@ int main(int, char*[])
 
     ImGuiTestEngine_GetIO(engine).ConfigRunSpeed = ImGuiTestRunSpeed_Cinematic;
 
-    auto test = IM_REGISTER_TEST(engine, "test", "test1");
-    test->TestFunc = [&](ImGuiTestContext* ctx) {
-        editor.clear();
-        ctx->SetRef(editor_window_name);
-        ctx->MouseMove(editor_name, ImGuiTestOpFlags_NoCheckHoveredId | ImGuiTestOpFlags_MoveToEdgeR | ImGuiTestOpFlags_MoveToEdgeU);
-        ctx->MouseClick(ImGuiMouseButton_Left);
-        ctx->KeyChars("auie");
-        IM_CHECK_STR_EQ(as_string(editor).c_str(), "auie");
-    };
+    add_tests(engine);
 
     // Start engine
     ImGuiTestEngine_Start(engine, ImGui::GetCurrentContext());
@@ -53,14 +38,6 @@ int main(int, char*[])
 
         ImGui::NewFrame();
         ImGuiTestEngine_ShowTestEngineWindows(engine, nullptr);
-
-        if (ImGui::Begin(editor_window_name)) {
-            if (ImGui::Button("button_name")) {
-                std::cout << "Button tested" << std::endl;
-            }
-            editor.render();
-        }
-        ImGui::End();
         ImGui::Render();
 
         window->ClearColor = window->ClearColor;
