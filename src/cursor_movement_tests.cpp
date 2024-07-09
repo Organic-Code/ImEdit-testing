@@ -11,7 +11,7 @@ namespace {
                     "int main(int argc, char* argv[]) {\n"
                     "    std::cout << \"Hello World\" << std::endl;\n"
                     "    return 0;\n"
-                    "}\n"
+                    "}"
         );
     }
 
@@ -83,6 +83,20 @@ void add_cursor_movement_tests(ImGuiTestEngine* engine) {
         IM_CHECK(editor.has_cursor({3, 4, 0}));
         ctx->KeyPress(ImGuiKey_LeftArrow | ImGuiMod_Ctrl);
         IM_CHECK(editor.has_cursor({3, 3, 0}));
+
+        // going up while at first lines goes to first char
+        ctx->KeyPress(ImGuiKey_UpArrow, 4);
+        IM_CHECK(editor.has_cursor({0, 0, 0}));
+
+        // going down while at last line goes to last char
+        ctx->KeyPress(ImGuiKey_DownArrow, 6);
+        IM_CHECK(editor.has_cursor({5, 0, 1}));
+
+        // end file, beg file
+        ctx->KeyPress(ImGuiKey_Home | ImGuiMod_Ctrl);
+        IM_CHECK(editor.has_cursor({0, 0, 0}));
+        ctx->KeyPress(ImGuiKey_End | ImGuiMod_Ctrl);
+        IM_CHECK(editor.has_cursor({5, 0, 1}));
 
         // next line and previous line using right and left arrows
         editor.set_cursor({3, 0, 0});
