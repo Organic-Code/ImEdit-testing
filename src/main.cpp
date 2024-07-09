@@ -4,6 +4,7 @@
 #include <imgui_te_exporters.h>
 #include <imgui_te_ui.h>
 #include <imgui_te_context.h>
+#include <imgui_te_utils.h>
 #include <iostream>
 
 #include "imgui_app.h"
@@ -26,7 +27,10 @@ int main(int, char*[])
     window->InitCreateWindow(window, "ImEdit testing", ImVec2(1440, 900));
     window->InitBackends(window);
 
-    ImGuiTestEngine_GetIO(engine).ConfigRunSpeed = ImGuiTestRunSpeed_Cinematic;
+    ImGuiTestEngine_GetIO(engine).ConfigRunSpeed = ImGuiTestRunSpeed_Normal;
+    ImGuiTestEngine_GetIO(engine).ConfigBreakOnError = ImOsIsDebuggerPresent();
+    ImGuiTestEngine_GetIO(engine).ScreenCaptureFunc = ImGuiApp_ScreenCaptureFunc;
+    ImGuiTestEngine_GetIO(engine).ScreenCaptureUserData = window;
 
     add_tests(engine);
 
@@ -40,10 +44,10 @@ int main(int, char*[])
         ImGuiTestEngine_ShowTestEngineWindows(engine, nullptr);
         ImGui::Render();
 
+        window->Vsync = !ImGuiTestEngine_GetIO(engine).IsRequestingMaxAppSpeed;
         window->ClearColor = window->ClearColor;
         window->Render(window);
 
-        // Post-swap handler is REQUIRED in order to support screen capture
         ImGuiTestEngine_PostSwap(engine);
     }
 

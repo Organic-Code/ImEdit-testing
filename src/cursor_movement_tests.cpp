@@ -224,6 +224,87 @@ void add_cursor_movement_tests(ImGuiTestEngine* engine) {
 
     };
 
+    test = IM_REGISTER_TEST(engine, mcm_name, "ctrl+click cursor creation on ASCII text");
+    test->GuiFunc = [&](ImGuiTestContext*) {
+        if (ImGui::Begin(window_name)) {
+            editor.render();
+        }
+        ImGui::End();
+    };
+    test->TestFunc = [&](ImGuiTestContext* ctx) {
+        // taking focus
+        ctx->WindowResize(window_name, ImVec2{500.f, 250.f});
+        ctx->WindowMove(window_name, ImVec2{0.f, 0.f});
+        ctx->SetRef(window_name);
+        ctx->MouseMove(editor_name, ImGuiTestOpFlags_NoCheckHoveredId | ImGuiTestOpFlags_MoveToEdgeR | ImGuiTestOpFlags_MoveToEdgeU);
+        ctx->MouseClick(ImGuiMouseButton_Left);
+
+        // filling editor with starting data
+        set_data_ascii(editor);
+        ctx->MouseMoveToPos({146, 66});
+        ctx->MouseClick(ImGuiMouseButton_Left);
+        IM_CHECK(editor.has_cursor({2, 6, 3}));
+
+        ctx->KeyDown(ImGuiKey_LeftCtrl);
+        ctx->MouseMoveToPos({243, 85});
+        ctx->MouseClick(ImGuiMouseButton_Left);
+        IM_CHECK(editor.has_cursor({3, 14, 0}));
+        IM_CHECK(editor.has_cursor({2, 6, 3}));
+
+        ctx->MouseMoveToPos({23, 98});
+        ctx->MouseClick(ImGuiMouseButton_Left);
+        IM_CHECK(editor.has_cursor({4, 0, 0}));
+        IM_CHECK(editor.has_cursor({3, 14, 0}));
+        IM_CHECK(editor.has_cursor({2, 6, 3}));
+
+        ctx->KeyUp(ImGuiKey_LeftCtrl);
+        ctx->MouseMoveToPos({301, 30});
+        ctx->MouseClick(ImGuiMouseButton_Left);
+        IM_CHECK(editor.has_cursor({0, 4, 1}));
+        IM_CHECK(!editor.has_cursor({4, 0, 0}));
+        IM_CHECK(!editor.has_cursor({3, 14, 0}));
+        IM_CHECK(!editor.has_cursor({2, 6, 3}));
+
+    };
+
+    test = IM_REGISTER_TEST(engine, mcm_name, "ctrl+click cursor creation on UTF-8 text");
+    test->GuiFunc = [&](ImGuiTestContext*) {
+        if (ImGui::Begin(window_name)) {
+            editor.render();
+        }
+        ImGui::End();
+    };
+    test->TestFunc = [&](ImGuiTestContext* ctx) {
+        // taking focus
+        ctx->WindowResize(window_name, ImVec2{500.f, 250.f});
+        ctx->WindowMove(window_name, ImVec2{0.f, 0.f});
+        ctx->SetRef(window_name);
+        ctx->MouseMove(editor_name, ImGuiTestOpFlags_NoCheckHoveredId | ImGuiTestOpFlags_MoveToEdgeR | ImGuiTestOpFlags_MoveToEdgeU);
+        ctx->MouseClick(ImGuiMouseButton_Left);
+
+        // filling editor with starting data
+        set_data_utf8(editor);
+
+        ctx->MouseMoveToPos({146, 66});
+        ctx->MouseClick(ImGuiMouseButton_Left);
+        IM_CHECK(editor.has_cursor({2, 7, 1}));
+
+        ctx->KeyDown(ImGuiKey_LeftCtrl);
+        ctx->MouseMoveToPos({243, 85});
+        ctx->MouseClick(ImGuiMouseButton_Left);
+        IM_CHECK(editor.has_cursor({3, 0, 0}));
+        IM_CHECK(editor.has_cursor({2, 7, 1}));
+
+        ctx->KeyUp(ImGuiKey_LeftCtrl);
+        ctx->MouseMoveToPos({301, 30});
+        ctx->MouseClick(ImGuiMouseButton_Left);
+        IM_CHECK(editor.has_cursor({0, 8, 27}));
+        IM_CHECK(!editor.has_cursor({3, 0, 0}));
+        IM_CHECK(!editor.has_cursor({2, 7, 1}));
+
+    };
+
+
+
     // TODO cursor pos when inputting text ? (maybe test that elsewhere)
-    // TODO on cursor click
 }
