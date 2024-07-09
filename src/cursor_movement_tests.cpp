@@ -304,6 +304,64 @@ void add_cursor_movement_tests(ImGuiTestEngine* engine) {
 
     };
 
+    test = IM_REGISTER_TEST(engine, mcm_name, "multiple cursor movement on ASCII text");
+    test->GuiFunc = [&](ImGuiTestContext*) {
+        if (ImGui::Begin(window_name)) {
+            editor.render();
+        }
+        ImGui::End();
+    };
+    test->TestFunc = [&](ImGuiTestContext* ctx) {
+        // taking focus
+        ctx->WindowResize(window_name, ImVec2{500.f, 250.f});
+        ctx->WindowMove(window_name, ImVec2{0.f, 0.f});
+        ctx->SetRef(window_name);
+        ctx->MouseMove(editor_name, ImGuiTestOpFlags_NoCheckHoveredId | ImGuiTestOpFlags_MoveToEdgeR | ImGuiTestOpFlags_MoveToEdgeU);
+        ctx->MouseClick(ImGuiMouseButton_Left);
+
+        // filling editor with starting data
+        set_data_ascii(editor);
+        editor.set_cursor({2, 6, 3});
+        editor.add_cursor({3, 6, 1});
+
+
+        // basic moves
+        ctx->KeyPress(ImGuiKey_UpArrow);
+        IM_CHECK(editor.has_cursor({1, 0, 0}));
+        IM_CHECK(editor.has_cursor({2, 6, 2}));
+        ctx->KeyPress(ImGuiKey_DownArrow);
+        IM_CHECK(editor.has_cursor({2, 6, 3}));
+        IM_CHECK(editor.has_cursor({3, 6, 1}));
+        ctx->KeyPress(ImGuiKey_DownArrow);
+        IM_CHECK(editor.has_cursor({3, 7, 1}));
+        IM_CHECK(editor.has_cursor({4, 4, 1}));
+        ctx->KeyPress(ImGuiKey_UpArrow);
+        IM_CHECK(editor.has_cursor({2, 6, 3}));
+        IM_CHECK(editor.has_cursor({3, 6, 1}));
+        ctx->KeyPress(ImGuiKey_LeftArrow);
+        IM_CHECK(editor.has_cursor({2, 6, 2}));
+        IM_CHECK(editor.has_cursor({3, 6, 0}));
+        ctx->KeyPress(ImGuiKey_RightArrow);
+        IM_CHECK(editor.has_cursor({2, 6, 3}));
+        IM_CHECK(editor.has_cursor({3, 6, 1}));
+        ctx->KeyPress(ImGuiKey_RightArrow);
+        IM_CHECK(editor.has_cursor({2, 6, 4}));
+        IM_CHECK(editor.has_cursor({3, 7, 1}));
+        ctx->KeyPress(ImGuiKey_LeftArrow);
+        IM_CHECK(editor.has_cursor({2, 6, 3}));
+        IM_CHECK(editor.has_cursor({3, 6, 1}));
+
+        ctx->KeyPress(ImGuiKey_End);
+        IM_CHECK(editor.has_cursor({2, 17, 1}));
+        IM_CHECK(editor.has_cursor({3, 22, 1}));
+        ctx->KeyPress(ImGuiKey_Home);
+        IM_CHECK(editor.has_cursor({2, 0, 0}));
+        IM_CHECK(editor.has_cursor({3, 1, 0}));
+        ctx->KeyPress(ImGuiKey_Home);
+        IM_CHECK(editor.has_cursor({2, 0, 0}));
+        IM_CHECK(editor.has_cursor({3, 0, 0}));
+    };
+
 
 
     // TODO cursor pos when inputting text ? (maybe test that elsewhere)
