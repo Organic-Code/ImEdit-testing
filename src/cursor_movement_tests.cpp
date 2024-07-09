@@ -15,6 +15,14 @@ namespace {
         );
     }
 
+    void set_data_utf8(ImEdit::editor &ed) {
+        ed.clear();
+        ed.set_data("ᚠᛇᚻ ᛒᛦᚦ ᚠᚱᚩᚠᚢᚱ ᚠᛁᚱᚪ ᚷᛖᚻᚹᛦᛚᚳᚢᛗ\n"
+                    "ᛋᚳᛖᚪᛚ ᚦᛖᚪᚻ ᛗᚪᚾᚾᚪ ᚷᛖᚻᚹᛦᛚᚳ ᛗᛁᚳᛚᚢᚾ ᚻᛦᛏ ᛞᚫᛚᚪᚾ\n"
+                    "ᚷᛁᚠ ᚻᛖ ᚹᛁᛚᛖ ᚠᚩᚱ ᛞᚱᛁᚻᛏᚾᛖ ᛞᚩᛗᛖᛋ ᚻᛚᛇᛏᚪᚾ᛬\n"
+        );
+    }
+
     constexpr const char* scm_name = "Single cursor move";
     constexpr const char* mcm_name = "Multi cursor move";
     constexpr const char* window_name = "cursor_movements_tests";
@@ -28,7 +36,6 @@ void add_cursor_movement_tests(ImGuiTestEngine* engine) {
 
     auto test = IM_REGISTER_TEST(engine, scm_name, "arrow key navigation within ASCII text");
     test->GuiFunc = [&](ImGuiTestContext*) {
-        ImGui::SetNextWindowSize({500.f, 250.f});
         if (ImGui::Begin(window_name)) {
             editor.render();
         }
@@ -36,6 +43,7 @@ void add_cursor_movement_tests(ImGuiTestEngine* engine) {
     };
     test->TestFunc = [&](ImGuiTestContext* ctx) {
         // taking focus
+        ctx->WindowResize(window_name, ImVec2{500.f, 250.f});
         ctx->SetRef(window_name);
         ctx->MouseMove(editor_name, ImGuiTestOpFlags_NoCheckHoveredId | ImGuiTestOpFlags_MoveToEdgeR | ImGuiTestOpFlags_MoveToEdgeU);
         ctx->MouseClick(ImGuiMouseButton_Left);
@@ -84,7 +92,7 @@ void add_cursor_movement_tests(ImGuiTestEngine* engine) {
 
         // end line / beg line
         ctx->KeyPress(ImGuiKey_End);
-        IM_CHECK(editor.has_cursor({3, 20, 1}));
+        IM_CHECK(editor.has_cursor({3, 22, 1}));
         ctx->KeyPress(ImGuiKey_Home);
         IM_CHECK(editor.has_cursor({3, 1, 0})); // Home sets the cursor position at the beginning of the line, but after the leading spaces
         ctx->KeyPress(ImGuiKey_Home);
