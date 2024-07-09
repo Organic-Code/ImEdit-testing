@@ -162,6 +162,41 @@ void add_cursor_movement_tests(ImGuiTestEngine* engine) {
         IM_CHECK(editor.has_cursor({1, 0, 0}));
     };
 
+    test = IM_REGISTER_TEST(engine, scm_name, "click navigation on ASCII text");
+    test->GuiFunc = [&](ImGuiTestContext*) {
+        if (ImGui::Begin(window_name)) {
+            editor.render();
+        }
+        ImGui::End();
+    };
+        }
+        ImGui::End();
+    };
+    test->TestFunc = [&](ImGuiTestContext* ctx) {
+        // taking focus
+        ctx->WindowResize(window_name, ImVec2{600.f, 300.f});
+        ctx->WindowMove(window_name, ImVec2{0.f, 0.f});
+        ctx->SetRef(window_name);
+        ctx->MouseMove(editor_name, ImGuiTestOpFlags_NoCheckHoveredId | ImGuiTestOpFlags_MoveToEdgeR | ImGuiTestOpFlags_MoveToEdgeU);
+        ctx->MouseClick(ImGuiMouseButton_Left);
+
+        // filling editor with starting data
+        set_data_ascii(editor);
+        ctx->MouseMoveToPos({146, 66});
+        ctx->MouseClick(ImGuiMouseButton_Left);
+        IM_CHECK(editor.has_cursor({2, 6, 3}));
+        ctx->MouseMoveToPos({243, 85});
+        ctx->MouseClick(ImGuiMouseButton_Left);
+        IM_CHECK(editor.has_cursor({3, 14, 0}));
+        ctx->MouseMoveToPos({23, 98});
+        ctx->MouseClick(ImGuiMouseButton_Left);
+        IM_CHECK(editor.has_cursor({4, 0, 0}));
+        ctx->MouseMoveToPos({301, 30});
+        ctx->MouseClick(ImGuiMouseButton_Left);
+        IM_CHECK(editor.has_cursor({0, 4, 1}));
+
+    };
+
     // TODO cursor pos when inputting text ? (maybe test that elsewhere)
     // TODO on cursor click
 }
