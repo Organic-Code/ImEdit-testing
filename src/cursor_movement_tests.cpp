@@ -23,7 +23,6 @@ namespace {
         );
     }
 
-
     constexpr const char* scm_name = "Single cursor move";
     constexpr const char* mcm_name = "Multi cursor move";
     constexpr const char* window_name = "cursor_movements_tests";
@@ -51,67 +50,67 @@ void add_cursor_movement_tests(ImGuiTestEngine* engine) {
 
         // filling editor with starting data
         set_data_ascii(editor);
-        editor.set_cursor({3, 4, 2});
-        IM_CHECK(editor.has_cursor({3, 4, 2}));
+        editor.set_cursor({3, 11});
+        IM_CHECK(editor.has_cursor({3, 11}));
 
         // basic moves
         ctx->KeyPress(ImGuiKey_UpArrow);
-        IM_CHECK(editor.has_cursor({2, 4, 2}));
+        IM_CHECK(editor.has_cursor({2, 11}));
         ctx->KeyPress(ImGuiKey_DownArrow);
-        IM_CHECK(editor.has_cursor({3, 4, 2}));
+        IM_CHECK(editor.has_cursor({3, 11}));
         ctx->KeyPress(ImGuiKey_DownArrow);
-        IM_CHECK(editor.has_cursor({4, 2, 1}));
+        IM_CHECK(editor.has_cursor({4, 11}));
         ctx->KeyPress(ImGuiKey_UpArrow);
-        IM_CHECK(editor.has_cursor({3, 4, 2}));
+        IM_CHECK(editor.has_cursor({3, 11}));
         ctx->KeyPress(ImGuiKey_LeftArrow);
-        IM_CHECK(editor.has_cursor({3, 4, 1}));
+        IM_CHECK(editor.has_cursor({3, 10}));
         ctx->KeyPress(ImGuiKey_RightArrow);
-        IM_CHECK(editor.has_cursor({3, 4, 2}));
+        IM_CHECK(editor.has_cursor({3, 11}));
         ctx->KeyPress(ImGuiKey_RightArrow);
-        IM_CHECK(editor.has_cursor({3, 4, 3}));
+        IM_CHECK(editor.has_cursor({3, 12}));
         ctx->KeyPress(ImGuiKey_LeftArrow);
-        IM_CHECK(editor.has_cursor({3, 4, 2}));
+        IM_CHECK(editor.has_cursor({3, 11}));
 
         // next token and previous token
         ctx->KeyPress(ImGuiKey_RightArrow | ImGuiMod_Ctrl);
-        IM_CHECK(editor.has_cursor({3, 5, 0}));
+        IM_CHECK(editor.has_cursor({3, 13}));
         ctx->KeyPress(ImGuiKey_RightArrow | ImGuiMod_Ctrl);
-        IM_CHECK(editor.has_cursor({3, 6, 0}));
+        IM_CHECK(editor.has_cursor({3, 14}));
 
-        editor.set_cursor({3, 4, 2});
+        editor.set_cursor({3, 11});
         ctx->KeyPress(ImGuiKey_LeftArrow | ImGuiMod_Ctrl);
-        IM_CHECK(editor.has_cursor({3, 4, 0}));
+        IM_CHECK(editor.has_cursor({3, 9}));
         ctx->KeyPress(ImGuiKey_LeftArrow | ImGuiMod_Ctrl);
-        IM_CHECK(editor.has_cursor({3, 3, 0}));
+        IM_CHECK(editor.has_cursor({3, 8}));
 
         // going up while at first lines goes to first char
         ctx->KeyPress(ImGuiKey_UpArrow, 4);
-        IM_CHECK(editor.has_cursor({0, 0, 0}));
+        IM_CHECK(editor.has_cursor({0, 0}));
 
         // going down while at last line goes to last char
         ctx->KeyPress(ImGuiKey_DownArrow, 6);
-        IM_CHECK(editor.has_cursor({5, 0, 1}));
+        IM_CHECK(editor.has_cursor({5, 1}));
 
         // end file, beg file
         ctx->KeyPress(ImGuiKey_Home | ImGuiMod_Ctrl);
-        IM_CHECK(editor.has_cursor({0, 0, 0}));
+        IM_CHECK(editor.has_cursor({0, 0}));
         ctx->KeyPress(ImGuiKey_End | ImGuiMod_Ctrl);
-        IM_CHECK(editor.has_cursor({5, 0, 1}));
+        IM_CHECK(editor.has_cursor({5, 1}));
 
         // next line and previous line using right and left arrows
-        editor.set_cursor({3, 0, 0});
+        editor.set_cursor({3, 0});
         ctx->KeyPress(ImGuiKey_LeftArrow);
-        IM_CHECK(editor.has_cursor({2, 17, 1}));
+        IM_CHECK(editor.has_cursor({2, 34}));
         ctx->KeyPress(ImGuiKey_RightArrow);
-        IM_CHECK(editor.has_cursor({3, 0, 0}));
+        IM_CHECK(editor.has_cursor({3, 0}));
 
         // end line / beg line
         ctx->KeyPress(ImGuiKey_End);
-        IM_CHECK(editor.has_cursor({3, 22, 1}));
+        IM_CHECK(editor.has_cursor({3, 44}));
         ctx->KeyPress(ImGuiKey_Home);
-        IM_CHECK(editor.has_cursor({3, 1, 0})); // Home sets the cursor position at the beginning of the line, but after the leading spaces
+        IM_CHECK(editor.has_cursor({3, 4})); // Home sets the cursor position at the beginning of the line, but after the leading spaces
         ctx->KeyPress(ImGuiKey_Home);
-        IM_CHECK(editor.has_cursor({3, 0, 0}));
+        IM_CHECK(editor.has_cursor({3, 0}));
     };
 
     test = IM_REGISTER_TEST(engine, scm_name, "arrow key navigation within UTF-8 text");
@@ -130,51 +129,51 @@ void add_cursor_movement_tests(ImGuiTestEngine* engine) {
 
         // filling editor with starting data
         set_data_utf8(editor);
-        editor.set_cursor({1, 6, 6});
-        IM_CHECK(editor.has_cursor({1, 6, 6}));
+        editor.set_cursor({1, 48});
+        IM_CHECK(editor.has_cursor({1, 48}));
 
         // basic moves
         ctx->KeyPress(ImGuiKey_UpArrow);
-        IM_CHECK(editor.has_cursor({0, 6, 12}));
+        IM_CHECK(editor.has_cursor({0, 48}));
         ctx->KeyPress(ImGuiKey_DownArrow);
-        IM_CHECK(editor.has_cursor({1, 6, 6}));
+        IM_CHECK(editor.has_cursor({1, 48}));
         ctx->KeyPress(ImGuiKey_DownArrow);
-        IM_CHECK(editor.has_cursor({2, 8, 9}));
+        IM_CHECK(editor.has_cursor({2, 46}));
         ctx->KeyPress(ImGuiKey_UpArrow);
-        IM_CHECK(editor.has_cursor({1, 6, 6}));
+        IM_CHECK(editor.has_cursor({1, 48}));
         ctx->KeyPress(ImGuiKey_LeftArrow);
-        IM_CHECK(editor.has_cursor({1, 6, 3}));
+        IM_CHECK(editor.has_cursor({1, 45}));
         ctx->KeyPress(ImGuiKey_RightArrow);
-        IM_CHECK(editor.has_cursor({1, 6, 6}));
+        IM_CHECK(editor.has_cursor({1, 48}));
         ctx->KeyPress(ImGuiKey_RightArrow);
-        IM_CHECK(editor.has_cursor({1, 6, 9}));
+        IM_CHECK(editor.has_cursor({1, 51}));
         ctx->KeyPress(ImGuiKey_LeftArrow);
-        IM_CHECK(editor.has_cursor({1, 6, 6}));
+        IM_CHECK(editor.has_cursor({1, 48}));
 
         // next token and previous token
         ctx->KeyPress(ImGuiKey_RightArrow | ImGuiMod_Ctrl);
-        IM_CHECK(editor.has_cursor({1, 7, 0}));
+        IM_CHECK(editor.has_cursor({1, 66}));
         ctx->KeyPress(ImGuiKey_RightArrow | ImGuiMod_Ctrl);
-        IM_CHECK(editor.has_cursor({1, 8, 0}));
+        IM_CHECK(editor.has_cursor({1, 67}));
 
-        editor.set_cursor({1, 6, 6});
+        editor.set_cursor({1, 48});
         ctx->KeyPress(ImGuiKey_LeftArrow | ImGuiMod_Ctrl);
-        IM_CHECK(editor.has_cursor({1, 6, 0}));
+        IM_CHECK(editor.has_cursor({1, 45}));
         ctx->KeyPress(ImGuiKey_LeftArrow | ImGuiMod_Ctrl);
-        IM_CHECK(editor.has_cursor({1, 5, 0}));
+        IM_CHECK(editor.has_cursor({1, 44}));
 
         // next line and previous line using right and left arrows
-        editor.set_cursor({1, 0, 0});
+        editor.set_cursor({1, 0});
         ctx->KeyPress(ImGuiKey_LeftArrow);
-        IM_CHECK(editor.has_cursor({0, 8, 27}));
+        IM_CHECK(editor.has_cursor({0, 79}));
         ctx->KeyPress(ImGuiKey_RightArrow);
-        IM_CHECK(editor.has_cursor({1, 0, 0}));
+        IM_CHECK(editor.has_cursor({1, 0}));
 
         // end line / beg line
         ctx->KeyPress(ImGuiKey_End);
-        IM_CHECK(editor.has_cursor({1, 12, 15}));
+        IM_CHECK(editor.has_cursor({1, 111}));
         ctx->KeyPress(ImGuiKey_Home);
-        IM_CHECK(editor.has_cursor({1, 0, 0}));
+        IM_CHECK(editor.has_cursor({1, 0}));
     };
 
     test = IM_REGISTER_TEST(engine, scm_name, "click navigation on ASCII text");
@@ -196,16 +195,16 @@ void add_cursor_movement_tests(ImGuiTestEngine* engine) {
         set_data_ascii(editor);
         ctx->MouseMoveToPos({146, 66});
         ctx->MouseClick(ImGuiMouseButton_Left);
-        IM_CHECK(editor.has_cursor({2, 6, 3}));
+        IM_CHECK(editor.has_cursor({2, 16}));
         ctx->MouseMoveToPos({243, 85});
         ctx->MouseClick(ImGuiMouseButton_Left);
-        IM_CHECK(editor.has_cursor({3, 14, 0}));
+        IM_CHECK(editor.has_cursor({3, 30}));
         ctx->MouseMoveToPos({23, 98});
         ctx->MouseClick(ImGuiMouseButton_Left);
-        IM_CHECK(editor.has_cursor({4, 0, 0}));
+        IM_CHECK(editor.has_cursor({4, 0}));
         ctx->MouseMoveToPos({301, 30});
         ctx->MouseClick(ImGuiMouseButton_Left);
-        IM_CHECK(editor.has_cursor({0, 4, 1}));
+        IM_CHECK(editor.has_cursor({0, 19}));
 
     };
 
@@ -228,13 +227,13 @@ void add_cursor_movement_tests(ImGuiTestEngine* engine) {
         set_data_utf8(editor);
         ctx->MouseMoveToPos({146, 66});
         ctx->MouseClick(ImGuiMouseButton_Left);
-        IM_CHECK(editor.has_cursor({2, 7, 1}));
+        IM_CHECK(editor.has_cursor({2, 40}));
         ctx->MouseMoveToPos({243, 85});
         ctx->MouseClick(ImGuiMouseButton_Left);
-        IM_CHECK(editor.has_cursor({3, 0, 0}));
+        IM_CHECK(editor.has_cursor({3, 0}));
         ctx->MouseMoveToPos({301, 30});
         ctx->MouseClick(ImGuiMouseButton_Left);
-        IM_CHECK(editor.has_cursor({0, 8, 27}));
+        IM_CHECK(editor.has_cursor({0, 79}));
 
     };
 
@@ -257,27 +256,27 @@ void add_cursor_movement_tests(ImGuiTestEngine* engine) {
         set_data_ascii(editor);
         ctx->MouseMoveToPos({146, 66});
         ctx->MouseClick(ImGuiMouseButton_Left);
-        IM_CHECK(editor.has_cursor({2, 6, 3}));
+        IM_CHECK(editor.has_cursor({2, 16}));
 
         ctx->KeyDown(ImGuiKey_LeftCtrl);
         ctx->MouseMoveToPos({243, 85});
         ctx->MouseClick(ImGuiMouseButton_Left);
-        IM_CHECK(editor.has_cursor({3, 14, 0}));
-        IM_CHECK(editor.has_cursor({2, 6, 3}));
+        IM_CHECK(editor.has_cursor({3, 30}));
+        IM_CHECK(editor.has_cursor({2, 16}));
 
         ctx->MouseMoveToPos({23, 98});
         ctx->MouseClick(ImGuiMouseButton_Left);
-        IM_CHECK(editor.has_cursor({4, 0, 0}));
-        IM_CHECK(editor.has_cursor({3, 14, 0}));
-        IM_CHECK(editor.has_cursor({2, 6, 3}));
+        IM_CHECK(editor.has_cursor({4, 0}));
+        IM_CHECK(editor.has_cursor({3, 30}));
+        IM_CHECK(editor.has_cursor({2, 16}));
 
         ctx->KeyUp(ImGuiKey_LeftCtrl);
         ctx->MouseMoveToPos({301, 30});
         ctx->MouseClick(ImGuiMouseButton_Left);
-        IM_CHECK(editor.has_cursor({0, 4, 1}));
-        IM_CHECK(!editor.has_cursor({4, 0, 0}));
-        IM_CHECK(!editor.has_cursor({3, 14, 0}));
-        IM_CHECK(!editor.has_cursor({2, 6, 3}));
+        IM_CHECK(editor.has_cursor({0, 19}));
+        IM_CHECK(!editor.has_cursor({4, 0}));
+        IM_CHECK(!editor.has_cursor({3, 30}));
+        IM_CHECK(!editor.has_cursor({2, 16}));
 
     };
 
@@ -301,20 +300,20 @@ void add_cursor_movement_tests(ImGuiTestEngine* engine) {
 
         ctx->MouseMoveToPos({146, 66});
         ctx->MouseClick(ImGuiMouseButton_Left);
-        IM_CHECK(editor.has_cursor({2, 7, 1}));
+        IM_CHECK(editor.has_cursor({2, 40}));
 
         ctx->KeyDown(ImGuiKey_LeftCtrl);
         ctx->MouseMoveToPos({243, 85});
         ctx->MouseClick(ImGuiMouseButton_Left);
-        IM_CHECK(editor.has_cursor({3, 0, 0}));
-        IM_CHECK(editor.has_cursor({2, 7, 1}));
+        IM_CHECK(editor.has_cursor({3, 0}));
+        IM_CHECK(editor.has_cursor({2, 40}));
 
         ctx->KeyUp(ImGuiKey_LeftCtrl);
         ctx->MouseMoveToPos({301, 30});
         ctx->MouseClick(ImGuiMouseButton_Left);
-        IM_CHECK(editor.has_cursor({0, 8, 27}));
-        IM_CHECK(!editor.has_cursor({3, 0, 0}));
-        IM_CHECK(!editor.has_cursor({2, 7, 1}));
+        IM_CHECK(editor.has_cursor({0, 79}));
+        IM_CHECK(!editor.has_cursor({3, 0}));
+        IM_CHECK(!editor.has_cursor({2, 40}));
 
     };
 
@@ -335,46 +334,48 @@ void add_cursor_movement_tests(ImGuiTestEngine* engine) {
 
         // filling editor with starting data
         set_data_ascii(editor);
-        editor.set_cursor({2, 6, 3});
-        editor.add_cursor({3, 6, 1});
+        editor.set_cursor({2, 16});
+        editor.add_cursor({3, 17});
 
 
         // basic moves
         ctx->KeyPress(ImGuiKey_UpArrow);
-        IM_CHECK(editor.has_cursor({1, 0, 0}));
-        IM_CHECK(editor.has_cursor({2, 6, 2}));
+        IM_CHECK(editor.has_cursor({1, 0}));
+        IM_CHECK(editor.has_cursor({2, 17}));
         ctx->KeyPress(ImGuiKey_DownArrow);
-        IM_CHECK(editor.has_cursor({2, 6, 3}));
-        IM_CHECK(editor.has_cursor({3, 6, 1}));
+        IM_CHECK(editor.has_cursor({2, 16}));
+        IM_CHECK(editor.has_cursor({3, 17}));
         ctx->KeyPress(ImGuiKey_DownArrow);
-        IM_CHECK(editor.has_cursor({3, 7, 1}));
-        IM_CHECK(editor.has_cursor({4, 4, 1}));
+        IM_CHECK(editor.has_cursor({3, 16}));
+        IM_CHECK(editor.has_cursor({4, 13}));
         ctx->KeyPress(ImGuiKey_UpArrow);
-        IM_CHECK(editor.has_cursor({2, 6, 3}));
-        IM_CHECK(editor.has_cursor({3, 6, 1}));
+        IM_CHECK(editor.has_cursor({2, 16}));
+        IM_CHECK(editor.has_cursor({3, 17}));
         ctx->KeyPress(ImGuiKey_LeftArrow);
-        IM_CHECK(editor.has_cursor({2, 6, 2}));
-        IM_CHECK(editor.has_cursor({3, 6, 0}));
+        IM_CHECK(editor.has_cursor({2, 15}));
+        IM_CHECK(editor.has_cursor({3, 16}));
         ctx->KeyPress(ImGuiKey_RightArrow);
-        IM_CHECK(editor.has_cursor({2, 6, 3}));
-        IM_CHECK(editor.has_cursor({3, 6, 1}));
+        IM_CHECK(editor.has_cursor({2, 16}));
+        IM_CHECK(editor.has_cursor({3, 17}));
         ctx->KeyPress(ImGuiKey_RightArrow);
-        IM_CHECK(editor.has_cursor({2, 6, 4}));
-        IM_CHECK(editor.has_cursor({3, 7, 1}));
+        IM_CHECK(editor.has_cursor({2, 17}));
+        IM_CHECK(editor.has_cursor({3, 18}));
         ctx->KeyPress(ImGuiKey_LeftArrow);
-        IM_CHECK(editor.has_cursor({2, 6, 3}));
-        IM_CHECK(editor.has_cursor({3, 6, 1}));
+        IM_CHECK(editor.has_cursor({2, 16}));
+        IM_CHECK(editor.has_cursor({3, 17}));
 
         ctx->KeyPress(ImGuiKey_End);
-        IM_CHECK(editor.has_cursor({2, 17, 1}));
-        IM_CHECK(editor.has_cursor({3, 22, 1}));
+        IM_CHECK(editor.has_cursor({2, 34}));
+        IM_CHECK(editor.has_cursor({3, 44}));
         ctx->KeyPress(ImGuiKey_Home);
-        IM_CHECK(editor.has_cursor({2, 0, 0}));
-        IM_CHECK(editor.has_cursor({3, 1, 0}));
+        IM_CHECK(editor.has_cursor({2, 0}));
+        IM_CHECK(editor.has_cursor({3, 4}));
         ctx->KeyPress(ImGuiKey_Home);
-        IM_CHECK(editor.has_cursor({2, 0, 0}));
-        IM_CHECK(editor.has_cursor({3, 0, 0}));
+        IM_CHECK(editor.has_cursor({2, 0}));
+        IM_CHECK(editor.has_cursor({3, 0}));
     };
+
+    // TODO multi cursor mouvement on UTF-8
 
 
 

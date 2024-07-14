@@ -37,6 +37,7 @@ int main(int, char*[])
     // Start engine
     ImGuiTestEngine_Start(engine, ImGui::GetCurrentContext());
     ImGuiTestEngine_InstallDefaultCrashHandler();
+
     while (window->NewFrame(window))
     {
 
