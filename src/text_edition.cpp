@@ -176,7 +176,127 @@ void add_text_edition_tests(ImGuiTestEngine* engine) {
 
     };
 
-    // TODO ascii/utf8 text addition
+
+    test = IM_REGISTER_TEST(engine, test_category, "ASCII text input");
+    test->GuiFunc = [&](ImGuiTestContext*) {
+        if (ImGui::Begin(window_name)) {
+            editor.render();
+        }
+        ImGui::End();
+    };
+    test->TestFunc = [&](ImGuiTestContext* ctx) {
+        // taking focus
+        ctx->WindowResize(window_name, ImVec2{500.f, 250.f});
+        ctx->SetRef(window_name);
+        ctx->MouseMove(editor_name, ImGuiTestOpFlags_NoCheckHoveredId | ImGuiTestOpFlags_MoveToEdgeR | ImGuiTestOpFlags_MoveToEdgeU);
+        ctx->MouseClick(ImGuiMouseButton_Left);
+
+        // filling editor with starting data
+        set_data_ascii(editor);
+        editor.set_cursor({3, 11});
+        IM_CHECK(editor.has_cursor({3, 11}));
+
+        ctx->KeyChars("auie nrst");
+        IM_CHECK(editor.has_cursor({3, 20}));
+        IM_CHECK_STR_EQ("#include <iostream>\n"
+                        "\n"
+                        "int main(int argc, char* argv[]) {\n"
+                        "    std::coauie nrstut << \"Hello World\" << std::endl;\n"
+                        "    return 0;\n"
+                        "}", to_string(editor).c_str());
+
+        editor.set_cursor({1, 0});
+        ctx->KeyPress(ImGuiKey_Enter);
+        IM_CHECK(editor.has_cursor({2, 0}));
+        IM_CHECK_STR_EQ("#include <iostream>\n"
+                        "\n"
+                        "\n"
+                        "int main(int argc, char* argv[]) {\n"
+                        "    std::coauie nrstut << \"Hello World\" << std::endl;\n"
+                        "    return 0;\n"
+                        "}", to_string(editor).c_str());
+
+
+        ctx->KeyChars("auie nrst");
+        IM_CHECK(editor.has_cursor({2, 9}));
+        IM_CHECK_STR_EQ("#include <iostream>\n"
+                        "\n"
+                        "auie nrst\n"
+                        "int main(int argc, char* argv[]) {\n"
+                        "    std::coauie nrstut << \"Hello World\" << std::endl;\n"
+                        "    return 0;\n"
+                        "}", to_string(editor).c_str());
+
+        editor.set_cursor({2, 4});
+        ctx->KeyPress(ImGuiKey_Enter | ImGuiMod_Ctrl);
+        IM_CHECK(editor.has_cursor({2, 4}));
+        IM_CHECK_STR_EQ("#include <iostream>\n"
+                        "\n"
+                        "auie\n"
+                        " nrst\n"
+                        "int main(int argc, char* argv[]) {\n"
+                        "    std::coauie nrstut << \"Hello World\" << std::endl;\n"
+                        "    return 0;\n"
+                        "}", to_string(editor).c_str());
+
+        ctx->KeyPress(ImGuiKey_Enter);
+        IM_CHECK(editor.has_cursor({3, 0}));
+        IM_CHECK_STR_EQ("#include <iostream>\n"
+                        "\n"
+                        "auie\n"
+                        "\n"
+                        " nrst\n"
+                        "int main(int argc, char* argv[]) {\n"
+                        "    std::coauie nrstut << \"Hello World\" << std::endl;\n"
+                        "    return 0;\n"
+                        "}", to_string(editor).c_str());
+    };
+
+
+    test = IM_REGISTER_TEST(engine, test_category, "UTF8 text input");
+    test->GuiFunc = [&](ImGuiTestContext*) {
+        if (ImGui::Begin(window_name)) {
+            editor.render();
+        }
+        ImGui::End();
+    };
+    test->TestFunc = [&](ImGuiTestContext* ctx) {
+        // taking focus
+        ctx->WindowResize(window_name, ImVec2{500.f, 250.f});
+        ctx->SetRef(window_name);
+        ctx->MouseMove(editor_name, ImGuiTestOpFlags_NoCheckHoveredId | ImGuiTestOpFlags_MoveToEdgeR | ImGuiTestOpFlags_MoveToEdgeU);
+        ctx->MouseClick(ImGuiMouseButton_Left);
+
+        // filling editor with starting data
+        set_data_utf8(editor);
+        editor.set_cursor({1, 41});
+        IM_CHECK(editor.has_cursor({1, 41}));
+
+        ctx->KeyChars("ᛋᚳᛖᚪᛚ ᚦᛖᚪᚻ");
+        IM_CHECK(editor.has_cursor({1, 69}));
+        IM_CHECK_STR_EQ("ᚠᛇᚻ ᛒᛦᚦ ᚠᚱᚩᚠᚢᚱ ᚠᛁᚱᚪ ᚷᛖᚻᚹᛦᛚᚳᚢᛗ\n"
+                        "ᛋᚳᛖᚪᛚ ᚦᛖᚪᚻ ᛗᚪᚾᚾᛋᚳᛖᚪᛚ ᚦᛖᚪᚻᚪ ᚷᛖᚻᚹᛦᛚᚳ ᛗᛁᚳᛚᚢᚾ ᚻᛦᛏ ᛞᚫᛚᚪᚾ\n"
+                        "ᚷᛁᚠ ᚻᛖ ᚹᛁᛚᛖ ᚠᚩᚱ ᛞᚱᛁᚻᛏᚾᛖ ᛞᚩᛗᛖᛋ ᚻᛚᛇᛏᚪᚾ᛬\n", to_string(editor).c_str());
+
+        editor.set_cursor({1, 0});
+        ctx->KeyPress(ImGuiKey_Enter);
+        IM_CHECK(editor.has_cursor({2, 0}));
+        IM_CHECK_STR_EQ("ᚠᛇᚻ ᛒᛦᚦ ᚠᚱᚩᚠᚢᚱ ᚠᛁᚱᚪ ᚷᛖᚻᚹᛦᛚᚳᚢᛗ\n"
+                        "\n"
+                        "ᛋᚳᛖᚪᛚ ᚦᛖᚪᚻ ᛗᚪᚾᚾᛋᚳᛖᚪᛚ ᚦᛖᚪᚻᚪ ᚷᛖᚻᚹᛦᛚᚳ ᛗᛁᚳᛚᚢᚾ ᚻᛦᛏ ᛞᚫᛚᚪᚾ\n"
+                        "ᚷᛁᚠ ᚻᛖ ᚹᛁᛚᛖ ᚠᚩᚱ ᛞᚱᛁᚻᛏᚾᛖ ᛞᚩᛗᛖᛋ ᚻᛚᛇᛏᚪᚾ᛬\n", to_string(editor).c_str());
+
+        editor.set_cursor({2, 9});
+        ctx->KeyPress(ImGuiKey_Enter | ImGuiMod_Ctrl);
+        IM_CHECK(editor.has_cursor({2, 9}));
+        IM_CHECK_STR_EQ("ᚠᛇᚻ ᛒᛦᚦ ᚠᚱᚩᚠᚢᚱ ᚠᛁᚱᚪ ᚷᛖᚻᚹᛦᛚᚳᚢᛗ\n"
+                        "\n"
+                        "ᛋᚳᛖ\n"
+                        "ᚪᛚ ᚦᛖᚪᚻ ᛗᚪᚾᚾᛋᚳᛖᚪᛚ ᚦᛖᚪᚻᚪ ᚷᛖᚻᚹᛦᛚᚳ ᛗᛁᚳᛚᚢᚾ ᚻᛦᛏ ᛞᚫᛚᚪᚾ\n"
+                        "ᚷᛁᚠ ᚻᛖ ᚹᛁᛚᛖ ᚠᚩᚱ ᛞᚱᛁᚻᛏᚾᛖ ᛞᚩᛗᛖᛋ ᚻᛚᛇᛏᚪᚾ᛬\n", to_string(editor).c_str());
+    };
+
+
     // TODO selection suppression
     // TODO writing over a selection
     // TODO ascii/utf8, mono/multi-cursor pasting

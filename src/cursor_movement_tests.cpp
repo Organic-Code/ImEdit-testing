@@ -113,7 +113,7 @@ void add_cursor_movement_tests(ImGuiTestEngine* engine) {
         IM_CHECK(editor.has_cursor({3, 0}));
     };
 
-    test = IM_REGISTER_TEST(engine, scm_name, "arrow key navigation within UTF-8 text");
+    test = IM_REGISTER_TEST(engine, scm_name, "arrow key navigation within UTF8 text");
     test->GuiFunc = [&](ImGuiTestContext*) {
         if (ImGui::Begin(window_name)) {
             editor.render();
@@ -208,7 +208,7 @@ void add_cursor_movement_tests(ImGuiTestEngine* engine) {
 
     };
 
-    test = IM_REGISTER_TEST(engine, scm_name, "click navigation on UTF-8 text");
+    test = IM_REGISTER_TEST(engine, scm_name, "click navigation on UTF8 text");
     test->GuiFunc = [&](ImGuiTestContext*) {
         if (ImGui::Begin(window_name)) {
             editor.render();
@@ -280,7 +280,7 @@ void add_cursor_movement_tests(ImGuiTestEngine* engine) {
 
     };
 
-    test = IM_REGISTER_TEST(engine, mcm_name, "ctrl+click cursor creation on UTF-8 text");
+    test = IM_REGISTER_TEST(engine, mcm_name, "ctrl+click cursor creation on UTF8 text");
     test->GuiFunc = [&](ImGuiTestContext*) {
         if (ImGui::Begin(window_name)) {
             editor.render();
@@ -374,7 +374,7 @@ void add_cursor_movement_tests(ImGuiTestEngine* engine) {
         IM_CHECK(editor.has_cursor({2, 0}));
         IM_CHECK(editor.has_cursor({3, 0}));
     };
-    // TODO multi cursor mouvement on UTF-8
+    // TODO multi cursor mouvement on UTF8
 
 
 
