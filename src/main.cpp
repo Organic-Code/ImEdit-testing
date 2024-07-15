@@ -11,9 +11,11 @@
 #include "imedit/editor.h"
 
 void add_cursor_movement_tests(ImGuiTestEngine* engine);
+void add_text_edition_tests(ImGuiTestEngine* engine);
 
 void add_tests(ImGuiTestEngine* engine) {
     add_cursor_movement_tests(engine);
+    add_text_edition_tests(engine);
 }
 
 int main(int, char*[])

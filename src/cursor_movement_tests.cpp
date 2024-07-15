@@ -374,7 +374,6 @@ void add_cursor_movement_tests(ImGuiTestEngine* engine) {
         IM_CHECK(editor.has_cursor({2, 0}));
         IM_CHECK(editor.has_cursor({3, 0}));
     };
-
     // TODO multi cursor mouvement on UTF-8
 
 
